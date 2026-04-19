@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, viewsets, permissions
 from rest_framework.permissions import AllowAny
+from rest_framework.decorators import action
 
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -87,3 +88,9 @@ class PatientDoctorMappingViewSet(viewsets.ModelViewSet):
     queryset = PatientDoctorMapping.objects.all()
     serializer_class = PatientDoctorMappingSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    @action(detail=False, methods=['get'], url_path='patient/(?P<patient_id>[^/.]+)')
+    def get_doctors_by_patient(self, request, patient_id=None):
+        mappings = PatientDoctorMapping.objects.filter(patient_id=patient_id)
+        serializer = self.get_serializer(mappings, many=True)
+        return Response(serializer.data)
