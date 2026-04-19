@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework import serializers
+from .models import Patient, Doctor, PatientDoctorMapping
 
 
 # Register 
@@ -45,3 +46,22 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError("Invalid credentials")
 
         return user
+    
+# Patient Serializer
+class PatientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Patient
+        fields = '__all__'
+        read_only_fields = ['created_by']
+
+# Doctor Serializer
+class DoctorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Doctor
+        fields = '__all__'
+
+# Patient-Doctor Mapping Serializer
+class PatientDoctorMappingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PatientDoctorMapping
+        fields = '__all__'
